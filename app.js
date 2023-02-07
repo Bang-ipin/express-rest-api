@@ -6,13 +6,20 @@ const logger        = require('morgan');
 const dotenv        = require('dotenv')
 
 
-const connection    = require('./config/connection');
+const db            = require('./config/connection');
 const routes        = require('./routes');
 
 dotenv.config()
 const app           = express();
 
-connection()
+// DI PRODUCTION JANGAN DIUBAH KE SEQUELIZE.SYNC({FORCE:TRUE}) JIKA TIDAK INGIN MENGHAPUS SEMUA DATA DIDATABASE KAMU, UNTUK KEPERLUAN DI DEVELOPMENT SILAKAN SAJA
+// db.sequelize.sync({force: false}).then(() => {
+db.authenticate().then(() => {
+    console.log(`Database connected successfully!`)
+}).catch((err)  =>{
+    console.log(`Cannot Connect to the database!`,err)
+    process.exit()
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
